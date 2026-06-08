@@ -410,7 +410,7 @@ export default function SurveyForm() {
         <div className="form-footer">
           <div className="footer-credit">
             <strong>Review facilitated by:</strong><br />
-            Lillian Nabirye — WUSC Volunteer &nbsp;·&nbsp; Chitty — Human Resources Coordinator, Emerge Livelihoods
+            Lillian Nabirye — WUSC Volunteer
           </div>
           <div>Emerge Livelihoods · Malawi</div>
         </div>
