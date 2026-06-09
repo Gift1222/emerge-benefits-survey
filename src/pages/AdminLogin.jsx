@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
+import LOGO from '../assets/logoData.js'
 
 const styles = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,9 +22,7 @@ const styles = `
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
   .card { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: 12px; padding: 2.5rem; width: 100%; max-width: 400px; }
   .logo-block { display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem; }
-  .logo-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
-  .logo-initials { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--accent-inv); letter-spacing: 0.02em; }
-  .org-name { font-family: 'DM Serif Display', serif; font-size: 18px; font-weight: 400; color: var(--text); margin-bottom: 2px; }
+  .logo-img { width: 130px; height: auto; margin-bottom: 4px; }
   .org-tagline { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
   .divider { height: 0.5px; background: var(--border-strong); margin: 0 0 1.75rem; }
   h1 { font-size: 17px; font-weight: 500; margin-bottom: 0.3rem; text-align: center; }
@@ -63,10 +62,7 @@ export default function AdminLogin() {
       <style>{styles}</style>
       <div className="card">
         <div className="logo-block">
-          <div className="logo-circle">
-            <span className="logo-initials">EL</span>
-          </div>
-          <div className="org-name">Emerge Livelihoods</div>
+          <img src={LOGO} alt="Emerge Livelihoods" className="logo-img" />
           <div className="org-tagline">Malawi</div>
         </div>
         <div className="divider" />

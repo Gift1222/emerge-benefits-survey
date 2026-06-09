@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
+import LOGO from '../assets/logoData.js'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
@@ -47,8 +48,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 /* ── Top bar ── */
 .topbar { background: var(--surface); border-bottom: 0.5px solid var(--border-strong); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 10; }
 .topbar-left { display: flex; align-items: center; gap: 12px; }
-.logo-circle-sm { width: 30px; height: 30px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; }
-.logo-initials-sm { font-family: 'DM Serif Display', serif; font-size: 11px; color: var(--accent-inv); }
+.topbar-logo { height: 28px; width: auto; display: block; }
 .org-mark { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 .sep { color: var(--hint); }
 .page-title { font-family: 'DM Serif Display', serif; font-size: 17px; font-weight: 400; }
@@ -338,8 +338,7 @@ export default function AdminDashboard() {
       {/* Top bar */}
       <div className="topbar">
         <div className="topbar-left">
-          <div className="logo-circle-sm"><span className="logo-initials-sm">EL</span></div>
-          <span className="org-mark">Emerge · Livelihoods</span>
+          <img src={LOGO} alt="Emerge Livelihoods" className="topbar-logo" />
           <span className="sep">·</span>
           <span className="page-title">Benefits Review Dashboard</span>
         </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import LOGO from '../assets/logoData.js'
 
 const BENEFITS = [
   'Salary',
@@ -61,8 +62,7 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 
 /* ── Centered header ─────────────────────────────── */
 .header { text-align: center; padding: 2.75rem 0 2rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-strong); }
-.logo-circle { width: 54px; height: 54px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; }
-.logo-initials { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--accent-inv); }
+.logo-img { width: 150px; height: auto; margin-bottom: 0.75rem; }
 .org-name { font-family: 'DM Serif Display', serif; font-size: 13px; font-weight: 400; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 1.25rem; }
 h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; line-height: 1.2; color: var(--text); margin-bottom: 0.75rem; }
 .intro { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 540px; margin: 0 auto; }
@@ -98,7 +98,7 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .rating-btn.selected { background: var(--accent); color: var(--accent-inv); border-color: var(--accent); }
 .add-row-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--muted); background: none; border: 0.5px dashed var(--border-strong); border-radius: var(--radius); padding: 8px 14px; cursor: pointer; margin-top: 10px; width: 100%; transition: background 0.15s; }
 .add-row-btn:hover { background: var(--surface2); color: var(--text); }
-.priorities-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.priorities-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
 .priority-field { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); }
 .priority-num { font-size: 12px; font-weight: 500; color: var(--hint); min-width: 16px; }
 .priority-field select { flex: 1; border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); padding: 0; -webkit-appearance: none; }
@@ -142,8 +142,8 @@ textarea::placeholder { color: var(--hint); }
 .submit-row { display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 0.5px solid var(--border); margin-top: 0.5rem; }
 .progress-text { font-size: 13px; color: var(--muted); }
 .progress-text strong { color: var(--text); }
-.submit-btn { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 11px 32px; background: var(--accent); color: var(--accent-inv); border: none; border-radius: var(--radius); cursor: pointer; transition: opacity 0.15s; }
-.submit-btn:hover { opacity: 0.82; }
+.submit-btn { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 11px 32px; background: #1d9e75; color: #ffffff; border: none; border-radius: var(--radius); cursor: pointer; transition: opacity 0.15s; }
+.submit-btn:hover { opacity: 0.85; }
 .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .success-banner { background: var(--success-bg); border: 0.5px solid var(--success-border); border-radius: var(--radius-lg); padding: 2rem; text-align: center; color: var(--success-text); margin-top: 1.5rem; }
 .check-icon { font-size: 40px; margin-bottom: 0.75rem; }
@@ -245,12 +245,7 @@ export default function SurveyForm() {
   }
 
   const Logo = () => (
-    <>
-      <div className="logo-circle">
-        <span className="logo-initials">EL</span>
-      </div>
-      <div className="org-name">Emerge Livelihoods</div>
-    </>
+    <img src={LOGO} alt="Emerge Livelihoods" className="logo-img" />
   )
 
   if (submitted) {
