@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
-import LOGO from '../assets/logoData.js'
+import LOGO from '../assets/emerge-logo.png'
 
 const BENEFITS = [
   'Salary',
