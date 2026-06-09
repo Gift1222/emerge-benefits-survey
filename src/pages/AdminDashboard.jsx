@@ -7,6 +7,7 @@ import {
   PieChart, Pie, Cell, Legend,
 } from 'recharts'
 import * as XLSX from 'xlsx'
+import PptxGenJS from 'pptxgenjs'
 
 const BENEFITS = [
   'Salary', 'Medical insurance / allowance', 'Transport allowance',
@@ -279,18 +280,7 @@ function exportToExcel(responses) {
 }
 
 async function exportToPptx(responses, logoSrc) {
-  // Dynamically load PptxGenJS from CDN
-  if (!window.PptxGenJS) {
-    await new Promise((resolve, reject) => {
-      const s = document.createElement('script')
-      s.src = 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js'
-      s.onload = resolve
-      s.onerror = reject
-      document.head.appendChild(s)
-    })
-  }
-
-  const pres = new window.PptxGenJS()
+  const pres = new PptxGenJS()
   pres.layout = 'LAYOUT_16x9'
   pres.title = 'Emerge Livelihoods — Employee Benefits Review'
   pres.author = 'Emerge Livelihoods HR'
@@ -869,6 +859,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 export default function AdminDashboard() {
   const [responses, setResponses] = useState([])
   const [loading, setLoading] = useState(true)
+  const [pptxLoading, setPptxLoading] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -923,7 +914,17 @@ export default function AdminDashboard() {
         </div>
         <div className="topbar-right">
           <button className="btn btn-export" onClick={() => exportToExcel(responses)} disabled={!responses.length}>
-            ↓ Export to Excel
+            ↓ Excel
+          </button>
+          <button
+            className="btn btn-pptx"
+            disabled={!responses.length || pptxLoading}
+            onClick={async () => {
+              setPptxLoading(true)
+              try { await exportToPptx(responses, LOGO) } finally { setPptxLoading(false) }
+            }}
+          >
+            {pptxLoading ? 'Building…' : '↓ Presentation'}
           </button>
           <button className="btn btn-signout" onClick={signOut}>Sign out</button>
         </div>
