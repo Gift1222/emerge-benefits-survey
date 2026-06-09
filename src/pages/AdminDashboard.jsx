@@ -56,6 +56,8 @@ body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--t
 .btn { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; padding: 7px 16px; border-radius: var(--radius); cursor: pointer; transition: opacity 0.15s; border: none; }
 .btn-export { background: var(--green); color: #fff; }
 .btn-export:hover { opacity: 0.85; }
+.btn-pptx { background: #1d6fa8; color: #fff; }
+.btn-pptx:hover { opacity: 0.85; }
 .btn-signout { background: var(--surface2); color: var(--muted); border: 0.5px solid var(--border-strong); }
 .btn-signout:hover { color: var(--text); }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
@@ -274,6 +276,583 @@ function exportToExcel(responses) {
   XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(actingRows), 'Acting Position')
 
   XLSX.writeFile(wb, `Emerge_Benefits_Review_${new Date().toISOString().slice(0, 10)}.xlsx`)
+}
+
+async function exportToPptx(responses, logoSrc) {
+  // Dynamically load PptxGenJS from CDN
+  if (!window.PptxGenJS) {
+    await new Promise((resolve, reject) => {
+      const s = document.createElement('script')
+      s.src = 'https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js'
+      s.onload = resolve
+      s.onerror = reject
+      document.head.appendChild(s)
+    })
+  }
+
+  const pres = new window.PptxGenJS()
+  pres.layout = 'LAYOUT_16x9'
+  pres.title = 'Emerge Livelihoods — Employee Benefits Review'
+  pres.author = 'Emerge Livelihoods HR'
+
+  const C = {
+    teal:      '028090',
+    tealLight: 'E1F5EE',
+    tealMid:   '0F6E56',
+    navy:      '1A2F4A',
+    white:     'FFFFFF',
+    offWhite:  'F7F9F8',
+    muted:     '6B7280',
+    red:       'E24B4A',
+    amber:     'EF9F27',
+    green:     '27AE60',
+    slate:     '374151',
+    cardBg:    'F0F9F8',
+  }
+
+  const date = new Date().toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })
+  const total = responses.length
+
+  // ── Helper: convert logo URL to base64 ──────────────────────
+  async function imgToBase64(src) {
+    return new Promise(res => {
+      const img = new Image()
+      img.crossOrigin = 'anonymous'
+      img.onload = () => {
+        const c = document.createElement('canvas')
+        c.width = img.naturalWidth; c.height = img.naturalHeight
+        c.getContext('2d').drawImage(img, 0, 0)
+        res(c.toDataURL('image/png').replace('data:image/png;base64,', 'image/png;base64,'))
+      }
+      img.onerror = () => res(null)
+      img.src = src
+    })
+  }
+
+  const logoData = await imgToBase64(logoSrc)
+
+  // ── Helper: add logo + footer to any slide ───────────────────
+  function addFooter(slide, lightBg = true) {
+    if (logoData) {
+      slide.addImage({ data: logoData, x: 0.4, y: 5.1, w: 1.4, h: 0.35 })
+    }
+    slide.addText(`Employee Benefits Review  ·  ${date}`, {
+      x: 2.0, y: 5.18, w: 6.2, h: 0.2,
+      fontSize: 8, color: lightBg ? C.muted : 'ADBFBE', align: 'center',
+    })
+    slide.addText(`${total} responses`, {
+      x: 8.3, y: 5.18, w: 1.3, h: 0.2,
+      fontSize: 8, color: lightBg ? C.muted : 'ADBFBE', align: 'right',
+    })
+  }
+
+  // ── Helper: stat card (rounded rect + label + value) ─────────
+  function addStatCard(slide, x, y, w, h, label, value, sub, accentColor) {
+    slide.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+      x, y, w, h,
+      fill: { color: C.white },
+      line: { color: 'E5E7EB', width: 0.5 },
+      shadow: { type: 'outer', color: '000000', blur: 4, offset: 2, angle: 45, opacity: 0.07 },
+      rectRadius: 0.1,
+    })
+    slide.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+      x: x + 0.15, y, w: 0.06, h,
+      fill: { color: accentColor || C.teal },
+      line: { color: accentColor || C.teal, width: 0 },
+      rectRadius: 0,
+    })
+    slide.addText(label.toUpperCase(), {
+      x: x + 0.32, y: y + 0.12, w: w - 0.4, h: 0.18,
+      fontSize: 8, color: C.muted, bold: true, charSpacing: 1,
+    })
+    slide.addText(String(value), {
+      x: x + 0.32, y: y + 0.32, w: w - 0.4, h: 0.48,
+      fontSize: 28, color: C.navy, bold: true, fontFace: 'Cambria',
+    })
+    if (sub) {
+      slide.addText(sub, {
+        x: x + 0.32, y: y + 0.82, w: w - 0.4, h: 0.18,
+        fontSize: 9, color: C.muted,
+      })
+    }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // SLIDE 1 — Cover
+  // ─────────────────────────────────────────────────────────────
+  {
+    const s = pres.addSlide()
+    s.background = { color: C.navy }
+
+    // Teal accent shape top-right
+    s.addShape(pres.shapes.RECTANGLE, {
+      x: 7.5, y: 0, w: 2.5, h: 5.625,
+      fill: { color: C.teal, transparency: 15 },
+      line: { color: C.teal, width: 0 },
+    })
+    s.addShape(pres.shapes.RECTANGLE, {
+      x: 8.5, y: 0, w: 1.5, h: 5.625,
+      fill: { color: C.teal, transparency: 5 },
+      line: { color: C.teal, width: 0 },
+    })
+
+    if (logoData) {
+      s.addImage({ data: logoData, x: 0.6, y: 0.5, w: 2.2, h: 0.55 })
+    }
+
+    s.addText('Employee Benefits', {
+      x: 0.6, y: 1.4, w: 6.6, h: 0.8,
+      fontSize: 40, color: C.white, bold: true, fontFace: 'Cambria',
+    })
+    s.addText('Review Report', {
+      x: 0.6, y: 2.15, w: 6.6, h: 0.7,
+      fontSize: 40, color: '5EEAD4', bold: false, fontFace: 'Cambria',
+    })
+
+    s.addText(`${total} Employee Responses  ·  ${date}`, {
+      x: 0.6, y: 3.1, w: 6.6, h: 0.3,
+      fontSize: 13, color: 'ADBFBE',
+    })
+    s.addText('Facilitated by Lillian Nabirye (WUSC Volunteer) & Chitty (HR Coordinator)', {
+      x: 0.6, y: 3.5, w: 6.6, h: 0.25,
+      fontSize: 10, color: '7A9FA0', italic: true,
+    })
+
+    s.addText('CONFIDENTIAL', {
+      x: 0.6, y: 4.9, w: 3, h: 0.2,
+      fontSize: 8, color: '5A7A7B', charSpacing: 3,
+    })
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // SLIDE 2 — Summary KPIs
+  // ─────────────────────────────────────────────────────────────
+  {
+    const s = pres.addSlide()
+    s.background = { color: C.offWhite }
+
+    s.addText('Survey at a Glance', {
+      x: 0.5, y: 0.25, w: 9, h: 0.55,
+      fontSize: 28, color: C.navy, bold: true, fontFace: 'Cambria',
+    })
+
+    const avgOverall = responses.length
+      ? (responses.reduce((acc, r) => {
+          const vals = Object.values(r.ratings || {}).filter(v => v !== undefined)
+          return acc + (vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0)
+        }, 0) / responses.length).toFixed(1)
+      : '—'
+
+    const avgRatingsData2 = BENEFITS.map(b => {
+      const vals = responses.map(r => r.ratings?.[b]).filter(v => v !== undefined && v !== null)
+      return { fullName: b, avg: vals.length ? (vals.reduce((a, c) => a + c, 0) / vals.length) : 0 }
+    }).filter(b => b.avg > 0).sort((a, b) => a.avg - b.avg)
+
+    const weakest = avgRatingsData2[0]
+    const strongest = avgRatingsData2[avgRatingsData2.length - 1]
+
+    const salData = salaryDist(responses)
+    const topSal = salData.length ? salData.sort((a, b) => b.value - a.value)[0].name : '—'
+
+    const prioTop = priorityCount(responses)[0]?.benefit || '—'
+
+    addStatCard(s, 0.4, 0.95, 2.1, 1.15, 'Total Responses', total, 'employees', C.teal)
+    addStatCard(s, 2.65, 0.95, 2.1, 1.15, 'Avg Overall Rating', avgOverall + ' / 5', 'across all benefits', C.tealMid)
+    addStatCard(s, 4.9, 0.95, 2.1, 1.15, 'Top Salary Ask', topSal, 'most recommended', C.amber.replace('#', ''))
+    addStatCard(s, 7.15, 0.95, 2.25, 1.15, '#1 Priority Benefit', '', '', C.navy)
+    s.addText(prioTop.length > 18 ? prioTop.slice(0, 18) + '…' : prioTop, {
+      x: 7.47, y: 1.27, w: 1.8, h: 0.55,
+      fontSize: 13, color: C.navy, bold: true, wrap: true,
+    })
+
+    // Weakest + Strongest
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+      x: 0.4, y: 2.3, w: 4.3, h: 0.8,
+      fill: { color: 'FEF2F2' }, line: { color: 'FECACA', width: 0.5 }, rectRadius: 0.08,
+    })
+    s.addText('Needs most attention', { x: 0.6, y: 2.34, w: 4.0, h: 0.2, fontSize: 9, color: C.red, bold: true })
+    s.addText(weakest ? `${weakest.fullName}  (avg ${weakest.avg.toFixed(1)})` : '—', {
+      x: 0.6, y: 2.54, w: 4.0, h: 0.22, fontSize: 11, color: C.slate,
+    })
+
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+      x: 5.0, y: 2.3, w: 4.4, h: 0.8,
+      fill: { color: 'EAF3DE' }, line: { color: 'BBF7D0', width: 0.5 }, rectRadius: 0.08,
+    })
+    s.addText('Highest rated', { x: 5.2, y: 2.34, w: 4.0, h: 0.2, fontSize: 9, color: C.green, bold: true })
+    s.addText(strongest ? `${strongest.fullName}  (avg ${strongest.avg.toFixed(1)})` : '—', {
+      x: 5.2, y: 2.54, w: 4.0, h: 0.22, fontSize: 11, color: C.slate,
+    })
+
+    // Acting position quick stat
+    const acting = actingStats(responses)
+    const yesP = total ? Math.round((acting.yes / total) * 100) : 0
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+      x: 0.4, y: 3.25, w: 4.3, h: 1.05,
+      fill: { color: C.white }, line: { color: 'E5E7EB', width: 0.5 }, rectRadius: 0.08,
+    })
+    s.addText('Willing to take acting role', { x: 0.6, y: 3.3, w: 3.9, h: 0.22, fontSize: 9, color: C.muted, bold: true })
+    s.addText(`${acting.yes} Yes  ·  ${acting.no} No`, { x: 0.6, y: 3.55, w: 3.9, h: 0.3, fontSize: 18, color: C.navy, bold: true, fontFace: 'Cambria' })
+    s.addText(`${yesP}% willing`, { x: 0.6, y: 3.88, w: 3.9, h: 0.2, fontSize: 9, color: C.muted })
+
+    // Training stat
+    const trainingCount = responses.filter(r => r.training_area).length
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+      x: 5.0, y: 3.25, w: 4.4, h: 1.05,
+      fill: { color: C.white }, line: { color: 'E5E7EB', width: 0.5 }, rectRadius: 0.08,
+    })
+    s.addText('Specified training interest', { x: 5.2, y: 3.3, w: 4.0, h: 0.22, fontSize: 9, color: C.muted, bold: true })
+    s.addText(`${trainingCount} employees`, { x: 5.2, y: 3.55, w: 4.0, h: 0.3, fontSize: 18, color: C.navy, bold: true, fontFace: 'Cambria' })
+    s.addText(`${total ? Math.round((trainingCount / total) * 100) : 0}% of respondents`, { x: 5.2, y: 3.88, w: 4.0, h: 0.2, fontSize: 9, color: C.muted })
+
+    addFooter(s)
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // SLIDE 3 — Average Ratings per Benefit (bar chart)
+  // ─────────────────────────────────────────────────────────────
+  {
+    const s = pres.addSlide()
+    s.background = { color: C.offWhite }
+
+    s.addText('Average Benefit Ratings', {
+      x: 0.5, y: 0.2, w: 7, h: 0.5,
+      fontSize: 26, color: C.navy, bold: true, fontFace: 'Cambria',
+    })
+    s.addText('Rated 0 (non-existent) → 5 (outstanding) by employees', {
+      x: 0.5, y: 0.68, w: 7, h: 0.25,
+      fontSize: 11, color: C.muted,
+    })
+
+    const avgRatingsAll2 = BENEFITS.map(b => {
+      const vals = responses.map(r => r.ratings?.[b]).filter(v => v !== undefined && v !== null)
+      return { label: b, value: vals.length ? parseFloat((vals.reduce((a, c) => a + c, 0) / vals.length).toFixed(2)) : 0 }
+    }).sort((a, b) => a.value - b.value)
+
+    const chartData = [{ name: 'Avg Rating', labels: avgRatingsAll2.map(d => d.label.length > 30 ? d.label.slice(0, 30) + '…' : d.label), values: avgRatingsAll2.map(d => d.value) }]
+
+    s.addChart(pres.charts.BAR, chartData, {
+      x: 0.4, y: 0.95, w: 9.2, h: 4.2,
+      barDir: 'bar',
+      chartColors: avgRatingsAll2.map(d => d.value < 2 ? C.red : d.value < 3.5 ? C.amber : C.green),
+      chartArea: { fill: { color: C.white }, roundedCorners: true },
+      catAxisLabelColor: C.slate,
+      catAxisLabelFontSize: 9,
+      valAxisLabelColor: C.muted,
+      valAxisLabelFontSize: 9,
+      valAxisMinVal: 0,
+      valAxisMaxVal: 5,
+      valGridLine: { color: 'E5E7EB', size: 0.5 },
+      catGridLine: { style: 'none' },
+      showValue: true,
+      dataLabelColor: C.slate,
+      dataLabelFontSize: 8,
+      showLegend: false,
+    })
+
+    addFooter(s)
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // SLIDE 4 — Priority Benefits & Salary Increment
+  // ─────────────────────────────────────────────────────────────
+  {
+    const s = pres.addSlide()
+    s.background = { color: C.offWhite }
+
+    s.addText('Priorities & Salary Recommendations', {
+      x: 0.5, y: 0.2, w: 9, h: 0.5,
+      fontSize: 26, color: C.navy, bold: true, fontFace: 'Cambria',
+    })
+
+    // Priority bar chart (left)
+    const prioData2 = priorityCount(responses).slice(0, 8)
+    s.addText('Top Priority Benefits (weighted score)', {
+      x: 0.4, y: 0.75, w: 5.5, h: 0.25, fontSize: 10, color: C.muted, bold: true,
+    })
+    if (prioData2.length > 0) {
+      s.addChart(pres.charts.BAR, [{
+        name: 'Score',
+        labels: prioData2.map(d => d.benefit.length > 26 ? d.benefit.slice(0, 26) + '…' : d.benefit),
+        values: prioData2.map(d => d.score),
+      }], {
+        x: 0.4, y: 1.0, w: 5.5, h: 3.8,
+        barDir: 'bar',
+        chartColors: [C.teal],
+        chartArea: { fill: { color: C.white }, roundedCorners: true },
+        catAxisLabelColor: C.slate, catAxisLabelFontSize: 9,
+        valAxisLabelColor: C.muted, valAxisLabelFontSize: 9,
+        valGridLine: { color: 'E5E7EB', size: 0.5 },
+        catGridLine: { style: 'none' },
+        showValue: true, dataLabelColor: C.slate, dataLabelFontSize: 8,
+        showLegend: false,
+      })
+    }
+
+    // Salary pie (right)
+    const salData2 = salaryDist(responses)
+    s.addText('Salary Increment Recommendation', {
+      x: 6.2, y: 0.75, w: 3.4, h: 0.25, fontSize: 10, color: C.muted, bold: true,
+    })
+    if (salData2.length > 0) {
+      s.addChart(pres.charts.PIE, [{
+        name: 'Employees',
+        labels: salData2.map(d => d.name),
+        values: salData2.map(d => d.value),
+      }], {
+        x: 6.0, y: 1.0, w: 3.6, h: 2.7,
+        chartColors: ['A3C4BC', '5B9AA0', '1A5276'],
+        chartArea: { fill: { color: C.white }, roundedCorners: true },
+        showPercent: true,
+        dataLabelColor: C.white,
+        dataLabelFontSize: 11,
+        dataLabelFontBold: true,
+        showLegend: true,
+        legendPos: 'b',
+        legendFontSize: 10,
+        legendColor: C.slate,
+      })
+    }
+
+    // Salary legend cards
+    salData2.forEach((d, i) => {
+      const x = 6.05 + i * 1.25
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+        x, y: 3.82, w: 1.15, h: 0.65,
+        fill: { color: C.white }, line: { color: 'E5E7EB', width: 0.5 }, rectRadius: 0.07,
+      })
+      s.addText(d.name, { x, y: 3.86, w: 1.15, h: 0.22, fontSize: 14, color: C.navy, bold: true, align: 'center', fontFace: 'Cambria' })
+      s.addText(`${d.value} emp.`, { x, y: 4.09, w: 1.15, h: 0.2, fontSize: 9, color: C.muted, align: 'center' })
+    })
+
+    addFooter(s)
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // SLIDE 5 — Life Event Contribution Preferences
+  // ─────────────────────────────────────────────────────────────
+  {
+    const s = pres.addSlide()
+    s.background = { color: C.offWhite }
+
+    s.addText('Life Event Contribution Preferences', {
+      x: 0.5, y: 0.2, w: 9, h: 0.5,
+      fontSize: 26, color: C.navy, bold: true, fontFace: 'Cambria',
+    })
+    s.addText('Cash vs in-kind preferences for wedding, introduction, and bereavement', {
+      x: 0.5, y: 0.68, w: 9, h: 0.22, fontSize: 11, color: C.muted,
+    })
+
+    const leStats2 = lifeEventStats(responses)
+
+    LIFE_EVENTS.forEach((ev, i) => {
+      const x = 0.4 + i * 3.2
+      const cash = leStats2[ev].cash
+      const inkind = leStats2[ev].inkind
+      const tot = cash + inkind || 1
+      const cashPct = Math.round((cash / tot) * 100)
+      const inkindPct = 100 - cashPct
+      const majority = cash >= inkind ? 'Cash' : 'In-kind'
+      const majColor = cash >= inkind ? C.teal : C.amber
+
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+        x, y: 1.0, w: 2.95, h: 3.65,
+        fill: { color: C.white }, line: { color: 'E5E7EB', width: 0.5 }, rectRadius: 0.1,
+        shadow: { type: 'outer', color: '000000', blur: 4, offset: 2, angle: 45, opacity: 0.07 },
+      })
+
+      s.addText(ev.toUpperCase(), { x: x + 0.15, y: 1.1, w: 2.6, h: 0.22, fontSize: 9, color: C.muted, bold: true, charSpacing: 2 })
+      s.addText(majority, { x: x + 0.15, y: 1.34, w: 2.6, h: 0.44, fontSize: 24, color: majColor, bold: true, fontFace: 'Cambria' })
+      s.addText('majority preference', { x: x + 0.15, y: 1.78, w: 2.6, h: 0.2, fontSize: 9, color: C.muted })
+
+      // Grouped bar chart
+      s.addChart(pres.charts.BAR, [
+        { name: 'Cash', labels: ['Cash', 'In-kind'], values: [cash, 0] },
+        { name: 'In-kind', labels: ['Cash', 'In-kind'], values: [0, inkind] },
+      ], {
+        x: x + 0.1, y: 2.0, w: 2.75, h: 1.85,
+        barDir: 'col',
+        barGrouping: 'clustered',
+        chartColors: [C.teal, C.amber],
+        chartArea: { fill: { color: 'F7F9F8' }, roundedCorners: false },
+        catAxisLabelColor: C.slate, catAxisLabelFontSize: 9,
+        valAxisLabelColor: C.muted, valAxisLabelFontSize: 8,
+        valGridLine: { color: 'E5E7EB', size: 0.5 },
+        catGridLine: { style: 'none' },
+        showValue: true, dataLabelColor: C.white, dataLabelFontSize: 10, dataLabelFontBold: true,
+        showLegend: false,
+        valAxisMinVal: 0,
+        valAxisMaxVal: Math.max(cash, inkind) + 1,
+      })
+
+      s.addText(`${cashPct}% Cash  ·  ${inkindPct}% In-kind`, {
+        x: x + 0.15, y: 3.92, w: 2.6, h: 0.2, fontSize: 8, color: C.muted, align: 'center',
+      })
+    })
+
+    addFooter(s)
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // SLIDE 6 — Acting Position & Training Interests
+  // ─────────────────────────────────────────────────────────────
+  {
+    const s = pres.addSlide()
+    s.background = { color: C.offWhite }
+
+    s.addText('Acting Position & Training Interests', {
+      x: 0.5, y: 0.2, w: 9, h: 0.5,
+      fontSize: 26, color: C.navy, bold: true, fontFace: 'Cambria',
+    })
+
+    const acting = actingStats(responses)
+    const yesP = total ? Math.round((acting.yes / total) * 100) : 0
+    const noP = total ? Math.round((acting.no / total) * 100) : 0
+
+    // Acting donut chart
+    s.addText('Willing to take acting role above current level?', {
+      x: 0.4, y: 0.78, w: 4.5, h: 0.22, fontSize: 10, color: C.muted, bold: true,
+    })
+    s.addChart(pres.charts.DOUGHNUT, [{
+      name: 'Employees',
+      labels: ['Yes', 'No', 'Not answered'],
+      values: [acting.yes, acting.no, acting.unanswered],
+    }], {
+      x: 0.3, y: 1.0, w: 3.2, h: 2.8,
+      chartColors: [C.green, C.red, 'D1D5DB'],
+      chartArea: { fill: { color: C.white }, roundedCorners: true },
+      holeSize: 55,
+      showPercent: true,
+      dataLabelColor: C.white,
+      dataLabelFontSize: 11,
+      dataLabelFontBold: true,
+      showLegend: true,
+      legendPos: 'b',
+      legendFontSize: 9,
+      legendColor: C.slate,
+    })
+
+    s.addText(`${acting.yes} Yes  (${yesP}%)`, { x: 0.4, y: 3.85, w: 3.0, h: 0.22, fontSize: 10, color: C.green, bold: true })
+    s.addText(`${acting.no} No  (${noP}%)`, { x: 0.4, y: 4.1, w: 3.0, h: 0.22, fontSize: 10, color: C.red, bold: true })
+
+    // Training interests list
+    s.addText('Training areas of interest', {
+      x: 4.0, y: 0.78, w: 5.6, h: 0.22, fontSize: 10, color: C.muted, bold: true,
+    })
+
+    const trainingItems = responses.filter(r => r.training_area).slice(0, 10)
+    s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+      x: 4.0, y: 1.0, w: 5.6, h: 3.65,
+      fill: { color: C.white }, line: { color: 'E5E7EB', width: 0.5 }, rectRadius: 0.1,
+    })
+
+    if (trainingItems.length === 0) {
+      s.addText('No training responses recorded.', { x: 4.2, y: 2.2, w: 5.2, h: 0.4, fontSize: 12, color: C.muted, align: 'center' })
+    } else {
+      trainingItems.forEach((r, i) => {
+        const iy = 1.1 + i * 0.36
+        if (iy > 4.45) return
+        const name = r.employee?.name ? `${r.employee.name}` : 'Anonymous'
+        const dept = r.employee?.department ? ` · ${r.employee.department}` : ''
+        s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+          x: 4.1, y: iy, w: 5.4, h: 0.32,
+          fill: { color: i % 2 === 0 ? C.cardBg : C.white }, line: { color: 'F3F4F6', width: 0 }, rectRadius: 0.05,
+        })
+        s.addText(name + dept, { x: 4.2, y: iy + 0.02, w: 2.2, h: 0.28, fontSize: 8, color: C.muted })
+        s.addText(r.training_area.length > 40 ? r.training_area.slice(0, 40) + '…' : r.training_area, {
+          x: 6.5, y: iy + 0.02, w: 2.9, h: 0.28, fontSize: 9, color: C.slate,
+        })
+      })
+    }
+
+    addFooter(s)
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // SLIDE 7 — Recommendations & Suggestions
+  // ─────────────────────────────────────────────────────────────
+  {
+    const s = pres.addSlide()
+    s.background = { color: C.offWhite }
+
+    s.addText('Employee Recommendations', {
+      x: 0.5, y: 0.2, w: 9, h: 0.5,
+      fontSize: 26, color: C.navy, bold: true, fontFace: 'Cambria',
+    })
+    s.addText('Selected quotes from employee responses', {
+      x: 0.5, y: 0.68, w: 9, h: 0.22, fontSize: 11, color: C.muted,
+    })
+
+    const recs = responses.filter(r => r.recommendations).slice(0, 4)
+    const sug = responses.filter(r => r.suggestions).slice(0, 4)
+
+    recs.forEach((r, i) => {
+      const col = i % 2
+      const row = Math.floor(i / 2)
+      const x = 0.4 + col * 4.9
+      const y = 1.0 + row * 1.55
+
+      s.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+        x, y, w: 4.7, h: 1.4,
+        fill: { color: C.cardBg }, line: { color: 'CBE8E3', width: 0.5 }, rectRadius: 0.1,
+      })
+      s.addText('"', { x: x + 0.12, y: y + 0.04, w: 0.3, h: 0.3, fontSize: 22, color: C.teal, bold: true })
+      const txt = r.recommendations.length > 130 ? r.recommendations.slice(0, 130) + '…' : r.recommendations
+      s.addText(txt, { x: x + 0.35, y: y + 0.1, w: 4.2, h: 0.9, fontSize: 9.5, color: C.slate, wrap: true })
+      const name = r.employee?.name || 'Anonymous'
+      s.addText(`— ${name}`, { x: x + 0.35, y: y + 1.12, w: 4.1, h: 0.2, fontSize: 8, color: C.muted, italic: true, align: 'right' })
+    })
+
+    if (recs.length === 0) {
+      s.addText('No recommendations recorded yet.', { x: 0.5, y: 2.5, w: 9, h: 0.4, fontSize: 13, color: C.muted, align: 'center' })
+    }
+
+    addFooter(s)
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // SLIDE 8 — Closing / Next Steps
+  // ─────────────────────────────────────────────────────────────
+  {
+    const s = pres.addSlide()
+    s.background = { color: C.navy }
+
+    s.addShape(pres.shapes.RECTANGLE, {
+      x: 0, y: 3.8, w: 10, h: 1.825,
+      fill: { color: C.teal, transparency: 20 },
+      line: { color: C.teal, width: 0 },
+    })
+
+    if (logoData) {
+      s.addImage({ data: logoData, x: 0.6, y: 0.4, w: 2.2, h: 0.55 })
+    }
+
+    s.addText('Thank You', {
+      x: 0.6, y: 1.2, w: 8.8, h: 0.8,
+      fontSize: 44, color: C.white, bold: true, fontFace: 'Cambria',
+    })
+    s.addText('Your feedback shapes a better workplace for everyone at Emerge Livelihoods.', {
+      x: 0.6, y: 2.1, w: 8.5, h: 0.6,
+      fontSize: 14, color: 'ADBFBE',
+    })
+
+    s.addText([
+      { text: 'HR Contact: ', options: { bold: true, color: '5EEAD4' } },
+      { text: 'Chitty — Human Resources Coordinator', options: { color: 'ADBFBE' } },
+    ], { x: 0.6, y: 3.95, w: 8.5, h: 0.28, fontSize: 11 })
+
+    s.addText([
+      { text: 'WUSC Volunteer: ', options: { bold: true, color: '5EEAD4' } },
+      { text: 'Lillian Nabirye', options: { color: 'ADBFBE' } },
+    ], { x: 0.6, y: 4.28, w: 8.5, h: 0.28, fontSize: 11 })
+
+    s.addText(`Generated ${date}  ·  ${total} responses  ·  CONFIDENTIAL`, {
+      x: 0.6, y: 4.9, w: 8.5, h: 0.22, fontSize: 8, color: '5A7A7B',
+    })
+  }
+
+  // ─── Save ────────────────────────────────────────────────────
+  await pres.writeFile({ fileName: `Emerge_Benefits_Review_${new Date().toISOString().slice(0, 10)}.pptx` })
 }
 
 const CustomTooltip = ({ active, payload, label }) => {
