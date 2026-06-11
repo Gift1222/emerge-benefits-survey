@@ -57,7 +57,7 @@ const css = `
     --error-bg: #2d0a0a; --error-border: #7f1d1d; --error-text: #fca5a5;
   }
 }
-body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 1rem 4rem; line-height: 1.6; }
+body { font-family: Verdana, Geneva, Tahoma, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 0 1rem 4rem; line-height: 1.6; }
 .page-wrap { max-width: 720px; margin: 0 auto; }
 
 /* ── Centered header ─────────────────────────────── */
@@ -74,7 +74,7 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field label { font-size: 13px; color: var(--muted); }
-.field input, .field select, .field textarea { font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; transition: border-color 0.15s; -webkit-appearance: none; }
+.field input, .field select, .field textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; transition: border-color 0.15s; -webkit-appearance: none; }
 .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--text); box-shadow: 0 0 0 2px rgba(0,0,0,0.06); }
 .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b67' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
@@ -93,22 +93,22 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .benefits-table td { padding: 10px 4px; vertical-align: middle; }
 .benefits-table td:first-child { font-size: 14px; color: var(--text); padding-left: 0; padding-right: 12px; }
 .rating-cell { text-align: center; }
-.rating-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; font-size: 13px; font-weight: 500; cursor: pointer; border: 0.5px solid var(--border-strong); color: var(--muted); transition: all 0.15s; background: none; font-family: 'DM Sans', sans-serif; }
+.rating-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; font-size: 13px; font-weight: 500; cursor: pointer; border: 1.5px solid #4C808A; color: var(--muted); transition: all 0.15s; background: none; font-family: Verdana, Geneva, Tahoma, sans-serif; }
 .rating-btn:hover { background: var(--surface2); color: var(--text); }
-.rating-btn.selected { background: var(--accent); color: var(--accent-inv); border-color: var(--accent); }
-.add-row-btn { font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--muted); background: none; border: 0.5px dashed var(--border-strong); border-radius: var(--radius); padding: 8px 14px; cursor: pointer; margin-top: 10px; width: 100%; transition: background 0.15s; }
+.rating-btn.selected { background: #4C808A; color: #ffffff; border-color: #4C808A; }
+.add-row-btn { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; color: var(--muted); background: none; border: 0.5px dashed var(--border-strong); border-radius: var(--radius); padding: 8px 14px; cursor: pointer; margin-top: 10px; width: 100%; transition: background 0.15s; }
 .add-row-btn:hover { background: var(--surface2); color: var(--text); }
 .priorities-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
 .priority-field { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); }
 .priority-num { font-size: 12px; font-weight: 500; color: var(--hint); min-width: 16px; }
-.priority-field select { flex: 1; border: none; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); padding: 0; -webkit-appearance: none; }
+.priority-field select { flex: 1; border: none; background: transparent; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; color: var(--text); padding: 0; -webkit-appearance: none; }
 .priority-field select:focus { outline: none; }
 
 .salary-options { display: flex; gap: 12px; }
 .salary-opt { flex: 1; }
-.salary-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px 8px; border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); cursor: pointer; transition: all 0.15s; font-size: 12px; color: var(--muted); gap: 4px; background: var(--surface); width: 100%; font-family: 'DM Sans', sans-serif; }
+.salary-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 18px 8px; border: 1.5px solid #4C808A; border-radius: var(--radius-lg); cursor: pointer; transition: all 0.15s; font-size: 12px; color: var(--muted); gap: 4px; background: var(--surface); width: 100%; font-family: Verdana, Geneva, Tahoma, sans-serif; }
 .salary-card:hover { background: var(--surface2); }
-.salary-card.selected { border: 1.5px solid var(--accent); background: var(--surface2); }
+.salary-card.selected { border: 2px solid #4C808A; background: var(--surface2); }
 .pct { font-size: 26px; font-weight: 500; color: var(--text); }
 
 /* ── Life event table ─────────────────────────────── */
@@ -118,31 +118,31 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .life-event-table td { padding: 10px 10px 10px 0; border-bottom: 0.5px solid var(--border); vertical-align: middle; font-size: 14px; }
 .life-event-table tr:last-child td { border-bottom: none; }
 .life-event-table td:not(:first-child) { text-align: center; }
-.radio-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; font-size: 18px; cursor: pointer; border: 0.5px solid var(--border-strong); color: var(--muted); background: none; font-family: 'DM Sans', sans-serif; transition: all 0.15s; }
+.radio-btn { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 50%; font-size: 18px; cursor: pointer; border: 1.5px solid #4C808A; color: var(--muted); background: none; font-family: Verdana, Geneva, Tahoma, sans-serif; transition: all 0.15s; }
 .radio-btn:hover { background: var(--surface2); }
-.radio-btn.selected { background: var(--accent); color: var(--accent-inv); border-color: var(--accent); }
+.radio-btn.selected { background: #4C808A; color: #ffffff; border-color: #4C808A; }
 .event-detail-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
 .event-detail-card { background: var(--surface2); border-radius: var(--radius); padding: 12px; }
 .event-detail-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
-.event-detail-card input, .event-detail-card textarea { font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 7px 9px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; }
+.event-detail-card input, .event-detail-card textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; padding: 7px 9px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; }
 .event-detail-card input:focus, .event-detail-card textarea:focus { outline: none; border-color: var(--text); }
 .event-detail-card textarea { resize: vertical; min-height: 60px; }
 
 /* ── Acting position ─────────────────────────────── */
 .yes-no-row { display: flex; gap: 10px; }
-.yn-btn { flex: 1; padding: 12px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; background: var(--surface); color: var(--muted); transition: all 0.15s; }
+.yn-btn { flex: 1; padding: 12px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; background: var(--surface); color: var(--muted); transition: all 0.15s; }
 .yn-btn:hover { background: var(--surface2); }
 .yn-btn.selected-yes { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
 .yn-btn.selected-no { background: var(--error-bg); border-color: var(--error-border); color: var(--error-text); }
 
-textarea { font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 11px 12px; resize: vertical; min-height: 100px; line-height: 1.6; width: 100%; transition: border-color 0.15s; }
+textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; color: var(--text); background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 11px 12px; resize: vertical; min-height: 100px; line-height: 1.6; width: 100%; transition: border-color 0.15s; }
 textarea:focus { outline: none; border-color: var(--text); }
 textarea::placeholder { color: var(--hint); }
 
 .submit-row { display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 0.5px solid var(--border); margin-top: 0.5rem; }
 .progress-text { font-size: 13px; color: var(--muted); }
 .progress-text strong { color: var(--text); }
-.submit-btn { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 11px 32px; background: #1d9e75; color: #ffffff; border: none; border-radius: var(--radius); cursor: pointer; transition: opacity 0.15s; }
+.submit-btn { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; font-weight: 500; padding: 11px 32px; background: #4C808A; color: #ffffff; border: none; border-radius: var(--radius); cursor: pointer; transition: opacity 0.15s; }
 .submit-btn:hover { opacity: 0.85; }
 .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .success-banner { background: var(--success-bg); border: 0.5px solid var(--success-border); border-radius: var(--radius-lg); padding: 2rem; text-align: center; color: var(--success-text); margin-top: 1.5rem; }
@@ -267,7 +267,7 @@ export default function SurveyForm() {
           <div className="form-footer">
             <div className="footer-credit">
               <strong>Review facilitated by:</strong><br />
-              Lillian Nabirye — WUSC Volunteer · Chitty — Human Resources Coordinator, Emerge Livelihoods
+              Lillian Nabirye — WUSC Volunteer
             </div>
             <div>Emerge Livelihoods · Malawi</div>
           </div>
@@ -573,7 +573,7 @@ export default function SurveyForm() {
         <div className="form-footer">
           <div className="footer-credit">
             <strong>Review facilitated by:</strong><br />
-            Lillian Nabirye — WUSC Volunteer · Chitty — Human Resources Coordinator, Emerge Livelihoods
+            Lillian Nabirye — WUSC Volunteer
           </div>
           <div>Emerge Livelihoods · Malawi</div>
         </div>
