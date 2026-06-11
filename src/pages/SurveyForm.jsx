@@ -386,7 +386,7 @@ export default function SurveyForm() {
               <strong>Review facilitated by:</strong><br />
               Lillian Nabirye — WUSC Volunteer
             </div>
-            <div>Emerge Livelihoods · Malawi</div>
+            {/* <div>Emerge Livelihoods · Malawi</div> */}
           </div>
         </div>
       </>
