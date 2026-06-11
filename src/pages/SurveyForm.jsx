@@ -414,7 +414,7 @@ export default function SurveyForm() {
           <div className="field-grid">
             <div className="field">
               <label>Name and title <span style={{ color: 'var(--hint)', fontStyle: 'normal' }}>(optional)</span></label>
-              <input type="text" placeholder="e.g. Jane Banda, Programme Officer"
+              <input type="text" placeholder="e.g. Ruth Gondwe, Admin Officer"
                 value={employee.name} onChange={e => setEmployee(p => ({ ...p, name: e.target.value }))} />
             </div>
             <div className="field">
