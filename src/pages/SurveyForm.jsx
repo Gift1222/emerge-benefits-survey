@@ -122,8 +122,8 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .radio-btn:hover { background: var(--surface2); }
 .radio-btn.selected { background: #4C808A; color: #ffffff; border-color: #4C808A; }
 .event-detail-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
-.event-detail-card { background: var(--surface2); border-radius: var(--radius); padding: 12px; }
-.event-detail-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
+.event-detail-card { background: #4C808A; border-radius: var(--radius); padding: 12px; }
+.event-detail-label { font-size: 12px; font-weight: 500; color: #ffffff; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
 .event-detail-card input, .event-detail-card textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; padding: 7px 9px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; }
 .event-detail-card input:focus, .event-detail-card textarea:focus { outline: none; border-color: var(--text); }
 .event-detail-card textarea { resize: vertical; min-height: 60px; }
@@ -486,7 +486,7 @@ export default function SurveyForm() {
                     onChange={e => setLifeEvent(ev, 'detail', e.target.value)} />
                 )}
                 {!lifeEventPrefs[ev].preference && (
-                  <div style={{ fontSize: 12, color: 'var(--hint)', paddingTop: 4 }}>Select cash or in-kind above</div>
+                  <div style={{ fontSize: 12, color: '#ffffff', paddingTop: 4 }}>Select cash or in-kind above</div>
                 )}
               </div>
             ))}
