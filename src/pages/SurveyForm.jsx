@@ -74,8 +74,8 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field label { font-size: 13px; color: var(--muted); }
-.field input, .field select, .field textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; transition: border-color 0.15s; -webkit-appearance: none; }
-.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--text); box-shadow: 0 0 0 2px rgba(0,0,0,0.06); }
+.field input, .field select, .field textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; transition: border-color 0.15s; -webkit-appearance: none; accent-color: #4C808A; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #4C808A; box-shadow: 0 0 0 2px rgba(76,128,138,0.2); }
 .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b67' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
 .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
 .field textarea::placeholder { color: var(--hint); }
@@ -101,7 +101,7 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .priorities-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
 .priority-field { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); }
 .priority-num { font-size: 12px; font-weight: 500; color: var(--hint); min-width: 16px; }
-.priority-field select { flex: 1; border: none; background: transparent; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; color: var(--text); padding: 0; -webkit-appearance: none; }
+.priority-field select { flex: 1; border: none; background: transparent; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; color: var(--text); padding: 0; -webkit-appearance: none; accent-color: #4C808A; }
 .priority-field select:focus { outline: none; }
 
 .salary-options { display: flex; gap: 12px; }
@@ -122,7 +122,7 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .radio-btn:hover { background: var(--surface2); }
 .radio-btn.selected { background: #4C808A; color: #ffffff; border-color: #4C808A; }
 .event-detail-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
-.event-detail-card { background: #4C808A; border-radius: var(--radius); padding: 12px; }
+.event-detail-card { background: #4C808A; border-radius: var(--radius); padding: 12px; text-align: center; }
 .event-detail-label { font-size: 12px; font-weight: 500; color: #ffffff; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
 .event-detail-card input, .event-detail-card textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; padding: 7px 9px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; }
 .event-detail-card input:focus, .event-detail-card textarea:focus { outline: none; border-color: var(--text); }
@@ -575,7 +575,7 @@ export default function SurveyForm() {
             <strong>Review facilitated by:</strong><br />
             Lillian Nabirye — WUSC Volunteer
           </div>
-          {/* <div>Emerge Livelihoods</div> */}
+          {/* <div>Emerge Livelihoods · Malawi</div> */}
         </div>
       </div>
     </>
