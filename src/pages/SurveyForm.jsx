@@ -94,8 +94,8 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 
 /* ── Priority custom dropdown (compact) ─────────── */
 .priority-custom-select { position: relative; flex: 1; }
-.priority-custom-trigger { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; padding: 0; background: transparent; border: none; color: var(--text); width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
-.priority-custom-trigger.placeholder { color: var(--hint); }
+.priority-custom-trigger { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; padding: 0; background: transparent; border: none; color: #ffffff; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
+.priority-custom-trigger.placeholder { color: #ffffff; }
 .priority-custom-trigger:focus { outline: none; }
 .priority-custom-dropdown { position: absolute; top: calc(100% + 8px); left: -42px; right: -12px; background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius); box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 100; max-height: 220px; overflow-y: auto; }
 .priority-custom-option { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; padding: 8px 12px; cursor: pointer; color: var(--text); transition: background 0.1s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -122,8 +122,8 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .add-row-btn { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; color: var(--muted); background: none; border: 0.5px dashed var(--border-strong); border-radius: var(--radius); padding: 8px 14px; cursor: pointer; margin-top: 10px; width: 100%; transition: background 0.15s; }
 .add-row-btn:hover { background: var(--surface2); color: var(--text); }
 .priorities-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
-.priority-field { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); position: relative; }
-.priority-num { font-size: 12px; font-weight: 500; color: var(--hint); min-width: 16px; }
+.priority-field { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 0.5px solid #4C808A; border-radius: var(--radius); background: #4C808A; position: relative; }
+.priority-num { font-size: 12px; font-weight: 500; color: #ffffff; min-width: 16px; }
 
 .salary-options { display: flex; gap: 12px; }
 .salary-opt { flex: 1; }
@@ -698,7 +698,7 @@ export default function SurveyForm() {
             <strong>Review facilitated by:</strong><br />
             Lillian Nabirye — WUSC Volunteer
           </div>
-          {/* <div>Emerge Livelihoods · Malawi</div> */}
+          <div>Emerge Livelihoods · Malawi</div>
         </div>
       </div>
     </>
