@@ -39,7 +39,7 @@ const ORDINALS = ['1st', '2nd', '3rd', '4th', '5th', '6th']
 const css = `
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #fafaf8; --surface: #ffffff; --surface2: #f5f4f1;
+  --bg: #fafaf8; --surface: #ffffff; --surface2: #4C808A;
   --border: rgba(0,0,0,0.1); --border-strong: rgba(0,0,0,0.2);
   --text: #1a1a18; --muted: #6b6b67; --hint: #9e9e9a;
   --accent: #1a1a18; --accent-inv: #ffffff;
@@ -575,7 +575,7 @@ export default function SurveyForm() {
             <strong>Review facilitated by:</strong><br />
             Lillian Nabirye — WUSC Volunteer
           </div>
-          <div>Emerge Livelihoods · Malawi</div>
+          <div>Emerge Livelihoods </div>
         </div>
       </div>
     </>
