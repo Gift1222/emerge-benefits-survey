@@ -39,7 +39,7 @@ const ORDINALS = ['1st', '2nd', '3rd', '4th', '5th', '6th']
 const css = `
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --bg: #fafaf8; --surface: #ffffff; --surface2: #4C808A;
+  --bg: #fafaf8; --surface: #ffffff; --surface2: #f5f4f1;
   --border: rgba(0,0,0,0.1); --border-strong: rgba(0,0,0,0.2);
   --text: #1a1a18; --muted: #6b6b67; --hint: #9e9e9a;
   --accent: #1a1a18; --accent-inv: #ffffff;
@@ -81,9 +81,9 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .field textarea::placeholder { color: var(--hint); }
 
 .scale-legend { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 1.25rem; }
-.scale-item { background: var(--surface2); border-radius: var(--radius); padding: 8px 4px; text-align: center; }
-.scale-num { font-size: 16px; font-weight: 500; color: var(--text); display: block; }
-.scale-lbl { font-size: 11px; color: var(--muted); line-height: 1.3; margin-top: 2px; display: block; }
+.scale-item { background: #4C808A; border-radius: var(--radius); padding: 8px 4px; text-align: center; }
+.scale-num { font-size: 16px; font-weight: 500; color: #ffffff; display: block; }
+.scale-lbl { font-size: 11px; color: #ffffff; line-height: 1.3; margin-top: 2px; display: block; }
 .benefits-table { width: 100%; border-collapse: collapse; }
 .benefits-table thead th { font-size: 12px; font-weight: 500; color: var(--muted); text-align: center; padding: 6px 4px 10px; border-bottom: 0.5px solid var(--border-strong); }
 .benefits-table thead th:first-child { text-align: left; padding-left: 0; }
@@ -575,7 +575,7 @@ export default function SurveyForm() {
             <strong>Review facilitated by:</strong><br />
             Lillian Nabirye — WUSC Volunteer
           </div>
-          <div>Emerge Livelihoods </div>
+          <div>Emerge Livelihoods · Malawi</div>
         </div>
       </div>
     </>
