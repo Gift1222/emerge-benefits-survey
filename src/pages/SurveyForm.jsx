@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { supabase } from '../lib/supabaseClient'
 import LOGO from '../assets/emerge-logo.png'
 
@@ -74,11 +74,34 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field label { font-size: 13px; color: var(--muted); }
-.field input, .field select, .field textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; transition: border-color 0.15s; -webkit-appearance: none; accent-color: #4C808A; }
-.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #4C808A; box-shadow: 0 0 0 2px rgba(76,128,138,0.2); }
-.field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b67' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px; }
+.field input, .field textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; transition: border-color 0.15s; -webkit-appearance: none; }
+.field input:focus, .field textarea:focus { outline: none; border-color: #4C808A; box-shadow: 0 0 0 2px rgba(76,128,138,0.2); }
 .field textarea { resize: vertical; min-height: 80px; line-height: 1.6; }
 .field textarea::placeholder { color: var(--hint); }
+
+/* ── Custom dropdown ─────────────────────────────── */
+.custom-select { position: relative; width: 100%; }
+.custom-select-trigger { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; padding: 9px 32px 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: border-color 0.15s; user-select: none; }
+.custom-select-trigger.placeholder { color: var(--hint); }
+.custom-select-trigger:focus { outline: none; border-color: #4C808A; box-shadow: 0 0 0 2px rgba(76,128,138,0.2); }
+.custom-select-trigger.open { border-color: #4C808A; box-shadow: 0 0 0 2px rgba(76,128,138,0.2); }
+.custom-select-arrow { pointer-events: none; flex-shrink: 0; margin-left: 8px; }
+.custom-select-dropdown { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius); box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 100; max-height: 220px; overflow-y: auto; }
+.custom-select-option { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; padding: 9px 12px; cursor: pointer; color: var(--text); transition: background 0.1s; }
+.custom-select-option:hover { background: rgba(76,128,138,0.1); }
+.custom-select-option.selected { background: #4C808A; color: #ffffff; }
+.custom-select-option.placeholder-opt { color: var(--hint); }
+
+/* ── Priority custom dropdown (compact) ─────────── */
+.priority-custom-select { position: relative; flex: 1; }
+.priority-custom-trigger { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; padding: 0; background: transparent; border: none; color: var(--text); width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: space-between; user-select: none; }
+.priority-custom-trigger.placeholder { color: var(--hint); }
+.priority-custom-trigger:focus { outline: none; }
+.priority-custom-dropdown { position: absolute; top: calc(100% + 8px); left: -42px; right: -12px; background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius); box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 100; max-height: 220px; overflow-y: auto; }
+.priority-custom-option { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; padding: 8px 12px; cursor: pointer; color: var(--text); transition: background 0.1s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.priority-custom-option:hover { background: rgba(76,128,138,0.1); }
+.priority-custom-option.selected { background: #4C808A; color: #ffffff; }
+.priority-custom-option.placeholder-opt { color: var(--hint); }
 
 .scale-legend { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-bottom: 1.25rem; }
 .scale-item { background: #4C808A; border-radius: var(--radius); padding: 8px 4px; text-align: center; }
@@ -99,10 +122,8 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .add-row-btn { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; color: var(--muted); background: none; border: 0.5px dashed var(--border-strong); border-radius: var(--radius); padding: 8px 14px; cursor: pointer; margin-top: 10px; width: 100%; transition: background 0.15s; }
 .add-row-btn:hover { background: var(--surface2); color: var(--text); }
 .priorities-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
-.priority-field { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); }
+.priority-field { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); position: relative; }
 .priority-num { font-size: 12px; font-weight: 500; color: var(--hint); min-width: 16px; }
-.priority-field select { flex: 1; border: none; background: transparent; font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; color: var(--text); padding: 0; -webkit-appearance: none; accent-color: #4C808A; }
-.priority-field select:focus { outline: none; }
 
 .salary-options { display: flex; gap: 12px; }
 .salary-opt { flex: 1; }
@@ -125,7 +146,7 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .event-detail-card { background: #4C808A; border-radius: var(--radius); padding: 12px; text-align: center; }
 .event-detail-label { font-size: 12px; font-weight: 500; color: #ffffff; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.06em; }
 .event-detail-card input, .event-detail-card textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 13px; padding: 7px 9px; border: 0.5px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text); width: 100%; }
-.event-detail-card input:focus, .event-detail-card textarea:focus { outline: none; border-color: var(--text); }
+.event-detail-card input:focus, .event-detail-card textarea:focus { outline: none; border-color: #4C808A; }
 .event-detail-card textarea { resize: vertical; min-height: 60px; }
 
 /* ── Acting position ─────────────────────────────── */
@@ -136,7 +157,7 @@ h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; 
 .yn-btn.selected-no { background: var(--error-bg); border-color: var(--error-border); color: var(--error-text); }
 
 textarea { font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 14px; color: var(--text); background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius); padding: 11px 12px; resize: vertical; min-height: 100px; line-height: 1.6; width: 100%; transition: border-color 0.15s; }
-textarea:focus { outline: none; border-color: var(--text); }
+textarea:focus { outline: none; border-color: #4C808A; }
 textarea::placeholder { color: var(--hint); }
 
 .submit-row { display: flex; align-items: center; justify-content: space-between; padding-top: 1.5rem; border-top: 0.5px solid var(--border); margin-top: 0.5rem; }
@@ -170,6 +191,88 @@ textarea::placeholder { color: var(--hint); }
 
 const LIFE_EVENTS = ['Wedding', 'Introduction', 'Bereavement']
 
+// ── Custom Select Component ──────────────────────────────────────────────────
+function CustomSelect({ value, onChange, options, placeholder, compact = false }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    function handleClick(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  const selectedLabel = options.find(o => o.value === value)?.label || null
+
+  if (compact) {
+    return (
+      <div className="priority-custom-select" ref={ref}>
+        <div
+          className={`priority-custom-trigger${!selectedLabel ? ' placeholder' : ''}`}
+          onClick={() => setOpen(o => !o)}
+          tabIndex={0}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setOpen(o => !o) }}
+        >
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
+            {selectedLabel || placeholder}
+          </span>
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="custom-select-arrow">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </div>
+        {open && (
+          <div className="priority-custom-dropdown">
+            <div
+              className={`priority-custom-option placeholder-opt${value === '' ? ' selected' : ''}`}
+              onMouseDown={() => { onChange(''); setOpen(false) }}
+            >{placeholder}</div>
+            {options.map(o => (
+              <div
+                key={o.value}
+                className={`priority-custom-option${value === o.value ? ' selected' : ''}`}
+                onMouseDown={() => { onChange(o.value); setOpen(false) }}
+              >{o.label}</div>
+            ))}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="custom-select" ref={ref}>
+      <div
+        className={`custom-select-trigger${!selectedLabel ? ' placeholder' : ''}${open ? ' open' : ''}`}
+        onClick={() => setOpen(o => !o)}
+        tabIndex={0}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setOpen(o => !o) }}
+      >
+        <span>{selectedLabel || placeholder}</span>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="custom-select-arrow">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </div>
+      {open && (
+        <div className="custom-select-dropdown">
+          <div
+            className={`custom-select-option placeholder-opt${value === '' ? ' selected' : ''}`}
+            onMouseDown={() => { onChange(''); setOpen(false) }}
+          >{placeholder}</div>
+          {options.map(o => (
+            <div
+              key={o.value}
+              className={`custom-select-option${value === o.value ? ' selected' : ''}`}
+              onMouseDown={() => { onChange(o.value); setOpen(false) }}
+            >{o.label}</div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function SurveyForm() {
   const [employee, setEmployee] = useState({
     name: '', employmentType: '', programme: '', department: '',
@@ -182,7 +285,6 @@ export default function SurveyForm() {
   const [suggestions, setSuggestions] = useState('')
   const [customBenefits, setCustomBenefits] = useState([])
 
-  // New fields
   const [lifeEventPrefs, setLifeEventPrefs] = useState({
     Wedding: { preference: '', detail: '' },
     Introduction: { preference: '', detail: '' },
@@ -248,6 +350,21 @@ export default function SurveyForm() {
     <img src={LOGO} alt="Emerge Livelihoods" className="logo-img" />
   )
 
+  const employmentTypeOptions = [
+    { value: 'Permanent', label: 'Permanent' },
+    { value: 'Temporary', label: 'Temporary' },
+    { value: 'Contract', label: 'Contract' },
+    { value: 'Volunteer', label: 'Volunteer' },
+    { value: 'Other', label: 'Other' },
+  ]
+  const programmeOptions = [
+    { value: 'Livelihoods', label: 'Livelihoods' },
+    { value: 'Ventures', label: 'Ventures' },
+    { value: 'Fund', label: 'Fund' },
+    { value: 'Other', label: 'Other' },
+  ]
+  const benefitOptions = allBenefits.map(b => ({ value: b, label: b }))
+
   if (submitted) {
     return (
       <>
@@ -302,20 +419,23 @@ export default function SurveyForm() {
             </div>
             <div className="field">
               <label>Nature of employment</label>
-              <select value={employee.employmentType} onChange={e => setEmployee(p => ({ ...p, employmentType: e.target.value }))}>
-                <option value="">Select type…</option>
-                <option>Permanent</option><option>Temporary</option>
-                <option>Contract</option><option>Volunteer</option><option>Other</option>
-              </select>
+              <CustomSelect
+                value={employee.employmentType}
+                onChange={v => setEmployee(p => ({ ...p, employmentType: v }))}
+                options={employmentTypeOptions}
+                placeholder="Select type…"
+              />
             </div>
           </div>
           <div className="field-grid">
             <div className="field">
               <label>Programme</label>
-              <select value={employee.programme} onChange={e => setEmployee(p => ({ ...p, programme: e.target.value }))}>
-                <option value="">Select programme…</option>
-                <option>Livelihoods</option><option>Ventures</option><option>Fund</option><option>Other</option>
-              </select>
+              <CustomSelect
+                value={employee.programme}
+                onChange={v => setEmployee(p => ({ ...p, programme: v }))}
+                options={programmeOptions}
+                placeholder="Select programme…"
+              />
             </div>
             <div className="field">
               <label>Department</label>
@@ -400,10 +520,13 @@ export default function SurveyForm() {
             {priorities.map((val, i) => (
               <div key={i} className="priority-field">
                 <span className="priority-num">{ORDINALS[i]}</span>
-                <select value={val} onChange={e => setPriority(i, e.target.value)}>
-                  <option value="">Choose benefit…</option>
-                  {allBenefits.map(b => <option key={b} value={b}>{b}</option>)}
-                </select>
+                <CustomSelect
+                  value={val}
+                  onChange={v => setPriority(i, v)}
+                  options={benefitOptions}
+                  placeholder="Choose benefit…"
+                  compact={true}
+                />
               </div>
             ))}
           </div>
